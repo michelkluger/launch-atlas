@@ -7,7 +7,8 @@ cable-car access.
 
 Built in Rust + a single static HTML/Leaflet frontend served by `axum`.
 
-![Launch Atlas screenshot](docs/screenshot.png)
+<img width="1919" height="1039" alt="image" src="https://github.com/user-attachments/assets/38188c69-8571-4686-a2b0-704d8b74f231" />
+
 
 ## Features
 

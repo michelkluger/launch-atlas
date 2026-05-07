@@ -1,0 +1,22 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+default-members = ["crates/cli", "crates/api", "crates/fetch", "crates/fetch-trails"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+hikefly-core = { path = "crates/core" }
+hikefly-terrain = { path = "crates/terrain" }
+hikefly-glide = { path = "crates/glide" }
+hikefly-launch = { path = "crates/launch" }
+hikefly-hike = { path = "crates/hike" }
+hikefly-score = { path = "crates/score" }
+hikefly-data = { path = "crates/data" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

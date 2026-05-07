@@ -1,0 +1,26 @@
+[package]
+name = "hikefly-api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "launchatlas"
+path = "src/main.rs"
+
+[dependencies]
+hikefly-core.workspace = true
+hikefly-terrain.workspace = true
+hikefly-glide.workspace = true
+hikefly-launch.workspace = true
+hikefly-hike.workspace = true
+hikefly-score.workspace = true
+hikefly-data.workspace = true
+
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tower-http = { version = "0.6", features = ["fs", "cors"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+rayon = "1"

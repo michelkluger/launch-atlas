@@ -1,0 +1,25 @@
+# Rust build artefacts
+/target
+**/*.rs.bk
+Cargo.lock.bak
+
+# Generated data files (re-fetch with launchatlas-fetch-* binaries)
+/region.bin
+/lifts.json
+/warnings.json
+/obstacles.json
+/trails.json
+/peaks-raw.json
+/cache/
+/*.tmp.json
+
+# IDE / OS noise
+/.idea
+/.vscode
+*.swp
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+/tmp/

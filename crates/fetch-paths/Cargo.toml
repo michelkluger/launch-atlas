@@ -1,0 +1,12 @@
+[package]
+name = "hikefly-fetch-paths"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "launchatlas-fetch-trails"
+path = "src/main.rs"
+
+[dependencies]
+hikefly-data.workspace = true

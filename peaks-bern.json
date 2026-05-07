@@ -1,0 +1,782 @@
+[
+  {
+    "name": "Niederhorn",
+    "lat": 46.722,
+    "lon": 7.797,
+    "ele": 1948
+  },
+  {
+    "name": "Niesen",
+    "lat": 46.6458,
+    "lon": 7.6512,
+    "ele": 2362
+  },
+  {
+    "name": "Stockhorn",
+    "lat": 46.6178,
+    "lon": 7.5471,
+    "ele": 2190
+  },
+  {
+    "name": "Hahnenmoos",
+    "lat": 46.4988,
+    "lon": 7.5288,
+    "ele": 1953
+  },
+  {
+    "name": "Gantrisch",
+    "lat": 46.705,
+    "lon": 7.4429,
+    "ele": 2175
+  },
+  {
+    "name": "Männlichen",
+    "lat": 46.6149,
+    "lon": 7.9389,
+    "ele": 2342
+  },
+  {
+    "name": "Brienzer Rothorn",
+    "lat": 46.7872,
+    "lon": 8.0858,
+    "ele": 2350
+  },
+  {
+    "name": "Schynige Platte",
+    "lat": 46.6535,
+    "lon": 7.9067,
+    "ele": 2076
+  },
+  {
+    "name": "Gärstenhoren",
+    "lat": 46.692641,
+    "lon": 8.0589922,
+    "ele": 2798.0
+  },
+  {
+    "name": "Drättehorn",
+    "lat": 46.5822078,
+    "lon": 7.8237894,
+    "ele": 2794.0
+  },
+  {
+    "name": "Brudelhorn",
+    "lat": 46.4676991,
+    "lon": 8.311145,
+    "ele": 2791.0
+  },
+  {
+    "name": "Schwarzbirg",
+    "lat": 46.5639136,
+    "lon": 7.8460361,
+    "ele": 2791.0
+  },
+  {
+    "name": "Chilchhorn",
+    "lat": 46.4854546,
+    "lon": 8.3946565,
+    "ele": 2789.0
+  },
+  {
+    "name": "Schilthorn",
+    "lat": 46.4218215,
+    "lon": 7.7507928,
+    "ele": 2788.0
+  },
+  {
+    "name": "Innerer Fisistock",
+    "lat": 46.4693982,
+    "lon": 7.6904877,
+    "ele": 2787.0
+  },
+  {
+    "name": "Schwarzhorn",
+    "lat": 46.5157169,
+    "lon": 7.7624946,
+    "ele": 2785.0
+  },
+  {
+    "name": "Obere Stock",
+    "lat": 46.5195795,
+    "lon": 8.2466153,
+    "ele": 2785.0
+  },
+  {
+    "name": "Grosses Engelhorn",
+    "lat": 46.6720967,
+    "lon": 8.1799824,
+    "ele": 2782.0
+  },
+  {
+    "name": "Felsenhorn",
+    "lat": 46.4285702,
+    "lon": 7.6102153,
+    "ele": 2782.0
+  },
+  {
+    "name": "Sädelhorn",
+    "lat": 46.4468606,
+    "lon": 8.3008657,
+    "ele": 2781.0
+  },
+  {
+    "name": "Blashorn",
+    "lat": 46.4999434,
+    "lon": 8.3706236,
+    "ele": 2779.0
+  },
+  {
+    "name": "Hindere Loner",
+    "lat": 46.4763867,
+    "lon": 7.6162378,
+    "ele": 2778.0
+  },
+  {
+    "name": "peak_9229882394",
+    "lat": 46.7564865,
+    "lon": 8.3598657,
+    "ele": 2778.0
+  },
+  {
+    "name": "Grauwi Steckli",
+    "lat": 46.7126222,
+    "lon": 8.3702593,
+    "ele": 2776.0
+  },
+  {
+    "name": "Hohhoren",
+    "lat": 46.5817273,
+    "lon": 8.3548248,
+    "ele": 2771.0
+  },
+  {
+    "name": "Tschingelturm",
+    "lat": 46.5191311,
+    "lon": 7.8675526,
+    "ele": 2770.0
+  },
+  {
+    "name": "Windegghoren",
+    "lat": 46.6887909,
+    "lon": 8.3298051,
+    "ele": 2765.0
+  },
+  {
+    "name": "Sidelhorn",
+    "lat": 46.5525251,
+    "lon": 8.3127142,
+    "ele": 2764.4
+  },
+  {
+    "name": "Mälchstuel",
+    "lat": 46.5363921,
+    "lon": 7.9352409,
+    "ele": 2764.0
+  },
+  {
+    "name": "Albristhorn",
+    "lat": 46.4970621,
+    "lon": 7.489344,
+    "ele": 2762.0
+  },
+  {
+    "name": "Reeti",
+    "lat": 46.6649424,
+    "lon": 8.0115401,
+    "ele": 2757.0
+  },
+  {
+    "name": "Bietenhorn",
+    "lat": 46.5771034,
+    "lon": 7.8648674,
+    "ele": 2756.0
+  },
+  {
+    "name": "Chummehorn",
+    "lat": 46.4241301,
+    "lon": 8.2512267,
+    "ele": 2754.0
+  },
+  {
+    "name": "Beeswenghoren",
+    "lat": 46.5082791,
+    "lon": 7.9229969,
+    "ele": 2754.0
+  },
+  {
+    "name": "Zahlershorn",
+    "lat": 46.5158237,
+    "lon": 7.7096355,
+    "ele": 2744.0
+  },
+  {
+    "name": "Brunnenhoren",
+    "lat": 46.4930807,
+    "lon": 7.8980742,
+    "ele": 2744.0
+  },
+  {
+    "name": "Aermighorn",
+    "lat": 46.5415097,
+    "lon": 7.7135773,
+    "ele": 2742.0
+  },
+  {
+    "name": "Chrinnenhorn",
+    "lat": 46.6326844,
+    "lon": 8.0972213,
+    "ele": 2741.0
+  },
+  {
+    "name": "Chlyne Diamantstock",
+    "lat": 46.5962933,
+    "lon": 8.2669351,
+    "ele": 2737.0
+  },
+  {
+    "name": "Tschingellochtighorn",
+    "lat": 46.445563,
+    "lon": 7.5929475,
+    "ele": 2735.0
+  },
+  {
+    "name": "Klein Wellhorn",
+    "lat": 46.6653983,
+    "lon": 8.1505884,
+    "ele": 2730.0
+  },
+  {
+    "name": "Honeggerhorn",
+    "lat": 46.4648077,
+    "lon": 8.1735428,
+    "ele": 2728.0
+  },
+  {
+    "name": "peak_1372230412",
+    "lat": 46.6568744,
+    "lon": 8.2303473,
+    "ele": 2727.0
+  },
+  {
+    "name": "peak_2489103108",
+    "lat": 46.6180485,
+    "lon": 8.2001968,
+    "ele": 2720.0
+  },
+  {
+    "name": "Garzen",
+    "lat": 46.7012601,
+    "lon": 8.0987711,
+    "ele": 2711.0
+  },
+  {
+    "name": "Ostegg",
+    "lat": 46.5969603,
+    "lon": 8.0413558,
+    "ele": 2710.0
+  },
+  {
+    "name": "Rotsandnollen",
+    "lat": 46.8005972,
+    "lon": 8.3439543,
+    "ele": 2700.0
+  },
+  {
+    "name": "Bräntlershorn",
+    "lat": 46.6041329,
+    "lon": 8.0757419,
+    "ele": 2699.0
+  },
+  {
+    "name": "Graustock",
+    "lat": 46.6933592,
+    "lon": 8.2980724,
+    "ele": 2689.0
+  },
+  {
+    "name": "Chly Chastelhorn",
+    "lat": 46.4931927,
+    "lon": 8.2216573,
+    "ele": 2683.0
+  },
+  {
+    "name": "Zahm Andrist",
+    "lat": 46.5533641,
+    "lon": 7.7875846,
+    "ele": 2681.0
+  },
+  {
+    "name": "Mittaghore",
+    "lat": 46.4676251,
+    "lon": 7.5897506,
+    "ele": 2677.0
+  },
+  {
+    "name": "Lämmerengrat",
+    "lat": 46.4072057,
+    "lon": 7.5881908,
+    "ele": 2674.0
+  },
+  {
+    "name": "Ammertenhorn",
+    "lat": 46.4173482,
+    "lon": 7.516486,
+    "ele": 2666.0
+  },
+  {
+    "name": "Rotstock",
+    "lat": 46.5773918,
+    "lon": 7.9841818,
+    "ele": 2663.0
+  },
+  {
+    "name": "Graustock",
+    "lat": 46.7878445,
+    "lon": 8.3683202,
+    "ele": 2662.0
+  },
+  {
+    "name": "Tellihorn",
+    "lat": 46.435828,
+    "lon": 7.8021901,
+    "ele": 2662.0
+  },
+  {
+    "name": "Männliflue",
+    "lat": 46.5513106,
+    "lon": 7.546573,
+    "ele": 2652.0
+  },
+  {
+    "name": "Bliejenduspitza",
+    "lat": 46.4419885,
+    "lon": 7.8297665,
+    "ele": 2652.0
+  },
+  {
+    "name": "Zucco di Balma Rossa",
+    "lat": 46.4004418,
+    "lon": 8.3907525,
+    "ele": 2640.0
+  },
+  {
+    "name": "Rotstock",
+    "lat": 46.4421563,
+    "lon": 7.5376858,
+    "ele": 2637.0
+  },
+  {
+    "name": "Hireli",
+    "lat": 46.5262729,
+    "lon": 8.2781635,
+    "ele": 2632.0
+  },
+  {
+    "name": "Wildstein",
+    "lat": 46.5125204,
+    "lon": 7.8129488,
+    "ele": 2615.0
+  },
+  {
+    "name": "peak_12852998989",
+    "lat": 46.4026007,
+    "lon": 7.828958,
+    "ele": 2595.0
+  },
+  {
+    "name": "Telltistock",
+    "lat": 46.6797456,
+    "lon": 8.3752343,
+    "ele": 2591.0
+  },
+  {
+    "name": "Juchlistock",
+    "lat": 46.5805406,
+    "lon": 8.3083288,
+    "ele": 2590.1
+  },
+  {
+    "name": "Dischlighorn",
+    "lat": 46.4308988,
+    "lon": 7.892136,
+    "ele": 2588.0
+  },
+  {
+    "name": "Tällistock",
+    "lat": 46.7454337,
+    "lon": 8.3248777,
+    "ele": 2579.0
+  },
+  {
+    "name": "Burg",
+    "lat": 46.6257896,
+    "lon": 8.3428287,
+    "ele": 2574.0
+  },
+  {
+    "name": "Lobhörner",
+    "lat": 46.6025654,
+    "lon": 7.8442503,
+    "ele": 2566.0
+  },
+  {
+    "name": "Jochstock",
+    "lat": 46.771472,
+    "lon": 8.395361,
+    "ele": 2564.0
+  },
+  {
+    "name": "Mittelchnubel",
+    "lat": 46.4835528,
+    "lon": 7.7418436,
+    "ele": 2561.0
+  },
+  {
+    "name": "First",
+    "lat": 46.5047914,
+    "lon": 7.6429546,
+    "ele": 2548.0
+  },
+  {
+    "name": "Giferspitz",
+    "lat": 46.4511604,
+    "lon": 7.3532098,
+    "ele": 2542.0
+  },
+  {
+    "name": "Glogghüs",
+    "lat": 46.7606419,
+    "lon": 8.2626841,
+    "ele": 2535.0
+  },
+  {
+    "name": "Dreispitz",
+    "lat": 46.5927116,
+    "lon": 7.7595715,
+    "ele": 2520.0
+  },
+  {
+    "name": "Zahm Geissberg",
+    "lat": 46.8148797,
+    "lon": 8.3262114,
+    "ele": 2511.0
+  },
+  {
+    "name": "Bockbiel",
+    "lat": 46.4214487,
+    "lon": 8.2771275,
+    "ele": 2506.0
+  },
+  {
+    "name": "Bäregg",
+    "lat": 46.5508373,
+    "lon": 8.2823519,
+    "ele": 2498.0
+  },
+  {
+    "name": "Chli Hohmad",
+    "lat": 46.7914467,
+    "lon": 8.3203088,
+    "ele": 2492.0
+  },
+  {
+    "name": "Türmlihore",
+    "lat": 46.5178733,
+    "lon": 7.5128262,
+    "ele": 2490.0
+  },
+  {
+    "name": "Ärnergale",
+    "lat": 46.4080334,
+    "lon": 8.2144163,
+    "ele": 2483.0
+  },
+  {
+    "name": "Hochstollen",
+    "lat": 46.7733856,
+    "lon": 8.2385179,
+    "ele": 2481.0
+  },
+  {
+    "name": "Bochtehorn",
+    "lat": 46.4780199,
+    "lon": 8.351435,
+    "ele": 2473.0
+  },
+  {
+    "name": "Lauberhorn",
+    "lat": 46.5925196,
+    "lon": 7.9480344,
+    "ele": 2472.0
+  },
+  {
+    "name": "peak_2486393531",
+    "lat": 46.632559,
+    "lon": 8.2181934,
+    "ele": 2470.1
+  },
+  {
+    "name": "Indri Sägissa",
+    "lat": 46.6689165,
+    "lon": 7.9635474,
+    "ele": 2462.0
+  },
+  {
+    "name": "Gummfluh",
+    "lat": 46.4405615,
+    "lon": 7.1950048,
+    "ele": 2458.0
+  },
+  {
+    "name": "Spalihorn",
+    "lat": 46.4235083,
+    "lon": 7.7793692,
+    "ele": 2456.0
+  },
+  {
+    "name": "Hohniesen",
+    "lat": 46.5772564,
+    "lon": 7.5832387,
+    "ele": 2454.0
+  },
+  {
+    "name": "Ärlenhoren",
+    "lat": 46.6055356,
+    "lon": 8.2909964,
+    "ele": 2453.0
+  },
+  {
+    "name": "Poganggenhorn",
+    "lat": 46.5410893,
+    "lon": 7.8319884,
+    "ele": 2443.0
+  },
+  {
+    "name": "Burstegge",
+    "lat": 46.4328658,
+    "lon": 7.7278664,
+    "ele": 2423.0
+  },
+  {
+    "name": "Schwarze Dossen",
+    "lat": 46.6483882,
+    "lon": 8.1805452,
+    "ele": 2418.0
+  },
+  {
+    "name": "Sulegg",
+    "lat": 46.6213611,
+    "lon": 7.8518208,
+    "ele": 2413.0
+  },
+  {
+    "name": "Rothore",
+    "lat": 46.5352439,
+    "lon": 7.4610649,
+    "ele": 2410.0
+  },
+  {
+    "name": "Drunegalm",
+    "lat": 46.6257925,
+    "lon": 7.6191047,
+    "ele": 2408.0
+  },
+  {
+    "name": "Tschipparällehore",
+    "lat": 46.6040338,
+    "lon": 7.6043562,
+    "ele": 2398.0
+  },
+  {
+    "name": "Grindelgrat",
+    "lat": 46.6991374,
+    "lon": 8.1274854,
+    "ele": 2392.0
+  },
+  {
+    "name": "Vanil Noir",
+    "lat": 46.5284985,
+    "lon": 7.1483661,
+    "ele": 2388.9
+  },
+  {
+    "name": "Schwabhoren",
+    "lat": 46.6837044,
+    "lon": 7.9893819,
+    "ele": 2374.0
+  },
+  {
+    "name": "Tierberg",
+    "lat": 46.4731584,
+    "lon": 7.4910314,
+    "ele": 2371.0
+  },
+  {
+    "name": "Wistätthorn",
+    "lat": 46.4541081,
+    "lon": 7.3863566,
+    "ele": 2362.0
+  },
+  {
+    "name": "Rote Stock",
+    "lat": 46.403847,
+    "lon": 7.4714814,
+    "ele": 2355.0
+  },
+  {
+    "name": "Bodezehore",
+    "lat": 46.5267958,
+    "lon": 7.5391616,
+    "ele": 2354.0
+  },
+  {
+    "name": "Dent de Brenleire",
+    "lat": 46.5508962,
+    "lon": 7.1747879,
+    "ele": 2353.0
+  },
+  {
+    "name": "Widderfeldstock",
+    "lat": 46.8336908,
+    "lon": 8.3325632,
+    "ele": 2351.0
+  },
+  {
+    "name": "Wittenberghorn",
+    "lat": 46.4162195,
+    "lon": 7.2098337,
+    "ele": 2350.0
+  },
+  {
+    "name": "Brienzer Rothorn",
+    "lat": 46.787096,
+    "lon": 8.0468683,
+    "ele": 2348.0
+  },
+  {
+    "name": "Elsighorn",
+    "lat": 46.5347037,
+    "lon": 7.639625,
+    "ele": 2341.0
+  },
+  {
+    "name": "Uf de Bidmer",
+    "lat": 46.5569148,
+    "lon": 8.3722721,
+    "ele": 2332.0
+  },
+  {
+    "name": "Chietalstock",
+    "lat": 46.4853357,
+    "lon": 8.3250018,
+    "ele": 2328.0
+  },
+  {
+    "name": "Wiriehorn",
+    "lat": 46.5802462,
+    "lon": 7.529654,
+    "ele": 2304.0
+  },
+  {
+    "name": "Mittaghiri",
+    "lat": 46.6883546,
+    "lon": 8.1918907,
+    "ele": 2292.0
+  },
+  {
+    "name": "Le Rubli",
+    "lat": 46.4631368,
+    "lon": 7.2109082,
+    "ele": 2285.0
+  },
+  {
+    "name": "Seehorn",
+    "lat": 46.5668496,
+    "lon": 7.4613209,
+    "ele": 2281.0
+  },
+  {
+    "name": "Staldenhorn",
+    "lat": 46.4238079,
+    "lon": 7.2362107,
+    "ele": 2262.0
+  },
+  {
+    "name": "Vorderi Spillgerte",
+    "lat": 46.5391391,
+    "lon": 7.4354228,
+    "ele": 2253.0
+  },
+  {
+    "name": "Dent de Savigny",
+    "lat": 46.5496077,
+    "lon": 7.2262726,
+    "ele": 2252.0
+  },
+  {
+    "name": "Morgenberghorn",
+    "lat": 46.6221954,
+    "lon": 7.7935682,
+    "ele": 2248.0
+  },
+  {
+    "name": "Planplatten",
+    "lat": 46.7367058,
+    "lon": 8.2552238,
+    "ele": 2245.0
+  },
+  {
+    "name": "Schafberg",
+    "lat": 46.6370246,
+    "lon": 7.3164172,
+    "ele": 2239.0
+  },
+  {
+    "name": "Oltschiburg",
+    "lat": 46.7163195,
+    "lon": 8.0792222,
+    "ele": 2234.0
+  },
+  {
+    "name": "Loucherhorn",
+    "lat": 46.6662576,
+    "lon": 7.9344574,
+    "ele": 2230.0
+  },
+  {
+    "name": "Tannhorn",
+    "lat": 46.7749903,
+    "lon": 7.9845705,
+    "ele": 2221.0
+  },
+  {
+    "name": "Chistihubel",
+    "lat": 46.5342285,
+    "lon": 7.7379152,
+    "ele": 2216.0
+  },
+  {
+    "name": "Cheerhubel",
+    "lat": 46.682103,
+    "lon": 8.1096788,
+    "ele": 2213.0
+  },
+  {
+    "name": "Gros Perré",
+    "lat": 46.5031561,
+    "lon": 7.1263375,
+    "ele": 2208.0
+  },
+  {
+    "name": "Burg",
+    "lat": 46.6536535,
+    "lon": 7.9809603,
+    "ele": 2207.0
+  },
+  {
+    "name": "Pt. 2201",
+    "lat": 46.7580365,
+    "lon": 8.2913064,
+    "ele": 2201.0
+  }
+]

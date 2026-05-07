@@ -1,0 +1,17 @@
+[package]
+name = "hikefly-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "launchatlas-demo"
+path = "src/main.rs"
+
+[dependencies]
+hikefly-core.workspace = true
+hikefly-terrain.workspace = true
+hikefly-glide.workspace = true
+hikefly-launch.workspace = true
+hikefly-hike.workspace = true
+hikefly-score.workspace = true

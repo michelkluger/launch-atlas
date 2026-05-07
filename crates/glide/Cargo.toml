@@ -1,0 +1,8 @@
+[package]
+name = "hikefly-glide"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+hikefly-core.workspace = true

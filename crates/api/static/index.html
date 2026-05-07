@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Launch Atlas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    :root {
+      --bg: #1a1d22;
+      --panel: #23272e;
+      --line: #353a44;
+      --text: #e3e6eb;
+      --muted: #8a93a3;
+      --accent: #6cc8ff;
+      --good: #5ad07c;
+      --warn: #f0b94a;
+    }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg); color: var(--text); overflow: hidden;
+    }
+    #app { display: grid; grid-template-columns: 320px 1fr 360px; height: 100vh; }
+    #map { background: #2a2f37; }
+    .leaflet-container { background: #2a2f37; }
+
+    aside {
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      padding: 16px 18px;
+      overflow-y: auto;
+    }
+    aside.right { border-right: none; border-left: 1px solid var(--line); }
+
+    h1 { font-size: 16px; letter-spacing: 0.5px; margin: 0 0 4px 0; }
+    h1 small { color: var(--muted); font-weight: 400; font-size: 12px; }
+    h2 {
+      font-size: 11px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--muted);
+      margin: 18px 0 8px 0;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+
+    .ctrl { margin-bottom: 12px; }
+    .ctrl label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .ctrl .val { float: right; color: var(--text); font-variant-numeric: tabular-nums; }
+    input[type=range] { width: 100%; }
+    input[type=number], select {
+      width: 100%; box-sizing: border-box;
+      background: #2c3138; border: 1px solid var(--line);
+      color: var(--text); padding: 4px 6px; border-radius: 4px;
+      font-family: inherit; font-size: 13px;
+    }
+
+    .compass {
+      width: 100%; aspect-ratio: 1; max-width: 220px;
+      margin: 4px auto 8px;
+      position: relative; border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #2c3138 0%, #1d2026 70%);
+      border: 1px solid var(--line);
+      cursor: crosshair; user-select: none;
+    }
+    .compass .label {
+      position: absolute; font-size: 10px; color: var(--muted);
+      transform: translate(-50%, -50%);
+    }
+    .compass .arrow {
+      position: absolute; left: 50%; top: 50%;
+      width: 4px; height: 40%;
+      background: var(--accent);
+      transform-origin: 50% 100%;
+      transform: translate(-50%, -100%) rotate(0deg);
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(108, 200, 255, 0.6);
+      pointer-events: none;
+    }
+    .compass .center-dot {
+      position: absolute; left: 50%; top: 50%;
+      width: 8px; height: 8px;
+      background: var(--text); border-radius: 50%;
+      transform: translate(-50%, -50%); pointer-events: none;
+    }
+
+    table.launches {
+      width: 100%; border-collapse: collapse; font-size: 12px;
+    }
+    table.launches th {
+      text-align: right; color: var(--muted);
+      font-weight: 500; padding: 4px 6px; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: var(--panel);
+    }
+    table.launches th:first-child { text-align: left; }
+    table.launches td {
+      padding: 4px 6px; border-bottom: 1px solid #2a2e35;
+      font-variant-numeric: tabular-nums; text-align: right; cursor: pointer;
+    }
+    table.launches td:first-child { text-align: left; color: var(--muted); }
+    table.launches tr:hover td { background: #2a2f37; }
+    table.launches tr.selected td { background: #2f3742; color: var(--accent); }
+
+    .legend { font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+    .legend .marker-scale {
+      display: flex; align-items: center; gap: 8px; margin-top: 4px;
+    }
+    .legend .marker-scale .dot {
+      display: inline-block; border-radius: 50%; background: #5ad07c;
+      border: 1px solid #1a1d22;
+    }
+    .trail-legend { font-size: 11px; color: var(--text); }
+    .trail-legend > div { margin-bottom: 3px; }
+    .trail-legend .swatch {
+      display: inline-block; width: 18px; height: 4px;
+      margin-right: 8px; vertical-align: middle; border-radius: 1px;
+    }
+    .legend kbd {
+      background: #2c3138; border: 1px solid var(--line);
+      padding: 1px 5px; border-radius: 3px; color: var(--text);
+      font-family: ui-monospace, monospace; font-size: 10px;
+    }
+
+    .launch-marker {
+      border-radius: 50%;
+      border: 2px solid #1a1d22;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+      transition: transform 80ms ease;
+    }
+    .launch-marker.selected { transform: scale(1.4); border-color: var(--accent); }
+
+    /* Reachability mask is rendered as discrete cell tiles, not blurred. */
+    .reach-overlay {
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+
+    .warn-badge {
+      position: absolute; top: -5px; right: -5px;
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #1a1d22;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #1a1d22;
+      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+    .warn-badge.Critical { background: #e85a5a; color: #fff; }
+    .warn-badge.High     { background: #f0894a; }
+    .warn-badge.Medium   { background: #f0b94a; }
+    .warn-badge.Low      { background: #b4b4b4; }
+    .launch-marker.flagged { box-shadow: 0 0 0 2px rgba(232, 90, 90, 0.55); }
+
+    .severity-tag {
+      display: inline-block; font-size: 9px; padding: 1px 4px;
+      border-radius: 3px; margin-left: 3px; font-weight: 600;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .severity-tag.Critical { background: #e85a5a; color: #fff; }
+    .severity-tag.High     { background: #f0894a; color: #1a1d22; }
+    .severity-tag.Medium   { background: #f0b94a; color: #1a1d22; }
+    .severity-tag.Low      { background: #b4b4b4; color: #1a1d22; }
+
+    .endpoint-circle {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid #1a1d22;
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+    }
+    .endpoint-circle.launch { background: rgba(255,255,255,0.85); }
+    .endpoint-circle.far    { background: rgba(40,40,46,0.85); }
+
+    .arrow-tip {
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 12px solid #1a1d22;
+      transform-origin: 50% 75%;
+    }
+
+    .toast {
+      position: absolute; bottom: 12px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,22,26,0.9); border: 1px solid var(--line);
+      padding: 6px 12px; border-radius: 6px; font-size: 12px;
+      color: var(--muted); pointer-events: none; opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .toast.show { opacity: 1; }
+
+    .basemap-toggle {
+      position: absolute; top: 12px; right: 372px; z-index: 1000;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 6px; padding: 4px;
+      display: flex; gap: 2px; font-size: 11px;
+    }
+    .basemap-toggle button {
+      background: transparent; color: var(--muted);
+      border: none; padding: 4px 8px; border-radius: 4px;
+      cursor: pointer; font-family: inherit; font-size: 11px;
+    }
+    .basemap-toggle button.active { background: var(--accent); color: #1a1d22; }
+
+    .src-badge {
+      display: inline-block; padding: 1px 6px; border-radius: 3px;
+      background: #2c3138; color: var(--accent); font-size: 10px;
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <aside class="left">
+      <h1>Launch Atlas <small id="srcLabel">loading…</small></h1>
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 8px;">
+        Click a launch on the map or in the table to see its glide footprint.
+      </div>
+
+      <h2>Wind</h2>
+      <div class="compass" id="compass" title="Drag to set wind direction (where wind comes FROM)">
+        <span class="label" style="left: 50%; top: 6%;">N</span>
+        <span class="label" style="left: 94%; top: 50%;">E</span>
+        <span class="label" style="left: 50%; top: 94%;">S</span>
+        <span class="label" style="left: 6%; top: 50%;">W</span>
+        <div class="arrow" id="windArrow"></div>
+        <div class="center-dot"></div>
+      </div>
+      <div class="ctrl">
+        <label>direction <span class="val" id="windFromVal">180°</span></label>
+        <input type="range" id="windFrom" min="0" max="359" value="180" />
+      </div>
+      <div class="ctrl">
+        <label>speed <span class="val" id="windKmhVal">8 km/h</span></label>
+        <input type="range" id="windKmh" min="0" max="40" value="8" />
+      </div>
+      <div class="ctrl">
+        <label><input type="checkbox" id="useWind" checked /> apply wind to scoring</label>
+      </div>
+
+      <h2>Approach</h2>
+      <div class="ctrl">
+        <label><input type="checkbox" id="useLifts" checked /> use cable cars / funiculars</label>
+      </div>
+
+      <h2>Trails</h2>
+      <div class="ctrl">
+        <label><input type="checkbox" id="showTrails" /> show hiking paths</label>
+        <div style="font-size: 10px; color: var(--muted); margin-top: 2px;" id="trailStatus">click to load (~10 MB)</div>
+        <div class="trail-legend" id="trailLegend" style="display:none; margin-top: 8px;">
+          <div><span class="swatch" style="background:#d63a44"></span> T2 Bergweg</div>
+          <div><span class="swatch" style="background:#a82832"></span> T3 Bergweg (demanding)</div>
+          <div><span class="swatch" style="background:#3a73c8"></span> T4 Alpinwanderweg</div>
+          <div><span class="swatch" style="background:#2858a8"></span> T5 Alpine (demanding)</div>
+          <div><span class="swatch" style="background:#15396f"></span> T6 Alpine (difficult)</div>
+        </div>
+      </div>
+
+      <h2>Layers</h2>
+      <div class="ctrl">
+        <label><input type="checkbox" id="showLand" checked /> land restrictions <span style="color:var(--muted)" id="landCount"></span></label>
+        <label><input type="checkbox" id="showAirspace" checked /> airspace (CTR / TMA) <span style="color:var(--muted)" id="airspaceCount"></span></label>
+        <label><input type="checkbox" id="showLifts" checked /> cable cars / funiculars <span style="color:var(--muted)" id="liftCount"></span></label>
+        <label><input type="checkbox" id="showGoods" checked /> material cables (hazard) <span style="color:var(--muted)" id="goodsCount"></span></label>
+        <label><input type="checkbox" id="showObstacles" checked /> BAZL obstacles <span style="color:var(--muted)" id="obstacleCount"></span></label>
+        <button id="jumpFlagged" style="margin-top: 6px; width: 100%;
+          background: #2c3138; color: var(--text); border: 1px solid var(--line);
+          padding: 4px 8px; border-radius: 4px; font-size: 11px;
+          font-family: inherit; cursor: pointer;">
+          jump to next flagged launch →
+        </button>
+      </div>
+
+      <h2>Scoring</h2>
+      <div class="ctrl">
+        <label>glide ratio <span class="val" id="glideRatioVal">8.0</span></label>
+        <input type="range" id="glideRatio" min="4" max="12" step="0.5" value="8" />
+      </div>
+      <div class="ctrl">
+        <label>α (hike penalty) <span class="val" id="alphaVal">1.0</span></label>
+        <input type="range" id="alpha" min="0.2" max="2.0" step="0.05" value="1.0" />
+      </div>
+      <div class="ctrl">
+        <label>glide metric</label>
+        <select id="metric">
+          <option value="distance">max flight distance</option>
+          <option value="area">reachable area</option>
+        </select>
+      </div>
+
+      <div class="legend">
+        Color = score (<span style="color: var(--good)">●</span> high &middot;
+        <span style="color: var(--warn)">●</span> low). Size = absolute glide reach.
+        <div class="marker-scale">
+          <span class="dot" style="width:8px; height:8px"></span>0 km
+          <span class="dot" style="width:16px; height:16px"></span>5 km
+          <span class="dot" style="width:24px; height:24px"></span>10 km
+          <span class="dot" style="width:32px; height:32px"></span>15 km+
+        </div>
+        Click → reachability footprint. <kbd>Esc</kbd> clears.
+      </div>
+    </aside>
+
+    <div id="map"></div>
+    <div class="basemap-toggle" id="basemapToggle">
+      <button data-layer="topo" class="active">topo</button>
+      <button data-layer="sat">satellite</button>
+      <button data-layer="shade">hillshade</button>
+    </div>
+
+    <aside class="right">
+      <h1>top launches</h1>
+      <div style="font-size: 11px; color: var(--muted); margin-bottom: 6px;" id="summary">—</div>
+      <table class="launches" id="launchTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>alt</th>
+            <th>aspect</th>
+            <th>glide</th>
+            <th>hike</th>
+            <th>m/min</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+  (async () => {
+    const dem = await fetch('/api/dem-info').then(r => r.json());
+    const isSwiss = dem.source === 'swissalti3d';
+    document.getElementById('srcLabel').innerHTML =
+      isSwiss
+        ? `<span class="src-badge">SwissALTI3D</span>`
+        : `<span class="src-badge">synthetic</span>`;
+
+    const [lonMin, latMin, lonMax, latMax] = dem.bbox_wgs84;
+    const center = [(latMin + latMax) / 2, (lonMin + lonMax) / 2];
+
+    const map = L.map('map', {
+      center,
+      zoom: 14,
+      attributionControl: true,
+      zoomControl: true,
+    });
+    map.fitBounds([[latMin, lonMin], [latMax, lonMax]]);
+
+    // Basemaps.
+    const topo = L.tileLayer(
+      'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg',
+      {
+        attribution: '© swisstopo',
+        maxZoom: 19,
+        tms: false,
+        crossOrigin: true,
+      }
+    );
+    const sat = L.tileLayer(
+      'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg',
+      { attribution: '© swisstopo', maxZoom: 19, crossOrigin: true }
+    );
+    const shadeBounds = [[dem.corners_wgs84[3][0], dem.corners_wgs84[3][1]],
+                         [dem.corners_wgs84[1][0], dem.corners_wgs84[1][1]]];
+    const shade = L.imageOverlay('/api/hillshade.png', shadeBounds, { opacity: 0.85 });
+
+    let activeBase = 'topo';
+    topo.addTo(map);
+    document.getElementById('basemapToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const layer = btn.dataset.layer;
+      if (layer === activeBase) return;
+      // remove old
+      if (activeBase === 'topo') map.removeLayer(topo);
+      if (activeBase === 'sat') map.removeLayer(sat);
+      if (activeBase === 'shade') map.removeLayer(shade);
+      // add new
+      if (layer === 'topo') topo.addTo(map);
+      if (layer === 'sat') sat.addTo(map);
+      if (layer === 'shade') shade.addTo(map);
+      activeBase = layer;
+      document.querySelectorAll('#basemapToggle button').forEach(b => {
+        b.classList.toggle('active', b.dataset.layer === layer);
+      });
+    });
+
+    // Trailheads (one per connected non-NaN component).
+    for (const t of dem.trailheads) {
+      L.circleMarker([t.lat, t.lon], {
+        radius: 5,
+        color: '#f0b94a', fillColor: '#f0b94a',
+        fillOpacity: 0.4, weight: 1,
+      }).addTo(map).bindTooltip(`trailhead (${Math.round(t.alt_m)} m)`);
+    }
+    // Lifts are visible on the swisstopo basemap; no need to redraw them.
+
+    // Polygon overlays split by category so each has its own toggle.
+    const severityStyle = {
+      Critical: { color: '#e85a5a', fillColor: '#e85a5a', fillOpacity: 0.18, weight: 1.5 },
+      High:     { color: '#f0894a', fillColor: '#f0894a', fillOpacity: 0.18, weight: 1.2 },
+      Medium:   { color: '#f0b94a', fillColor: '#f0b94a', fillOpacity: 0.10, weight: 1.0 },
+      Low:      { color: '#b4b4b4', fillColor: '#b4b4b4', fillOpacity: 0.08, weight: 1.0 },
+    };
+    const airspaceStyle = {
+      Critical: { color: '#a65cff', fillColor: '#a65cff', fillOpacity: 0.12, weight: 1.5, dashArray: '4 3' },
+      High:     { color: '#a65cff', fillColor: '#a65cff', fillOpacity: 0.10, weight: 1.2, dashArray: '4 3' },
+      Medium:   { color: '#7090d0', fillColor: '#7090d0', fillOpacity: 0.06, weight: 1.0, dashArray: '5 4' },
+      Low:      { color: '#7090d0', fillColor: '#7090d0', fillOpacity: 0.04, weight: 1.0, dashArray: '5 4' },
+    };
+    const isAirspace = w => w.kind === 'AirspaceCtr' || w.kind === 'AirspaceTma';
+    const landLayers = L.layerGroup();
+    const airspaceLayers = L.layerGroup();
+    let nLand = 0, nAir = 0;
+    if (dem.warnings) {
+      for (const w of dem.warnings) {
+        if (isAirspace(w)) {
+          nAir++;
+          L.polygon(w.polygon, airspaceStyle[w.severity] || airspaceStyle.Low)
+            .bindTooltip(`${w.name}<br><small>${w.kind} · ${w.severity}</small>`)
+            .addTo(airspaceLayers);
+        } else {
+          nLand++;
+          L.polygon(w.polygon, severityStyle[w.severity] || severityStyle.Low)
+            .bindTooltip(`${w.name}<br><small>${w.kind} · ${w.severity}</small>`)
+            .addTo(landLayers);
+        }
+      }
+    }
+    landLayers.addTo(map);
+    airspaceLayers.addTo(map);
+    document.getElementById('landCount').textContent = nLand ? `(${nLand})` : '';
+    document.getElementById('airspaceCount').textContent = nAir ? `(${nAir})` : '';
+
+    // Lift / cable lines split into two layers: passenger transport and
+    // hazard material cables (Materialseilbahnen, farmer cargo cables).
+    const liftLayers = L.layerGroup();
+    const goodsLayers = L.layerGroup();
+    if (dem.lifts) {
+      const liftColor = {
+        CableCar: '#6cc8ff',
+        Gondola: '#6cc8ff',
+        ChairLift: '#5da9d6',
+        DragLift: '#aaaaaa',
+        Funicular: '#a05cff',
+        CogRailway: '#a05cff',
+      };
+      let nLifts = 0, nGoods = 0;
+      for (const l of dem.lifts) {
+        if (l.kind === 'GoodsLift') {
+          nGoods++;
+          // Bright warning red, thicker dashed — easy to spot for flight planning.
+          L.polyline([l.lower, l.upper], {
+            color: '#ff3a3a', weight: 3, opacity: 0.95, dashArray: '6 4',
+          }).bindTooltip(`⚠ ${l.name || 'Materialseilbahn'} — cable hazard`, { sticky: true })
+            .addTo(goodsLayers);
+        } else {
+          nLifts++;
+          const c = liftColor[l.kind] || '#888';
+          L.polyline([l.lower, l.upper], {
+            color: c, weight: 2.5, opacity: 0.85, dashArray: '4 3',
+          }).bindTooltip(`${l.name} (${l.kind}, ${l.travel_minutes.toFixed(0)} min)`)
+            .addTo(liftLayers);
+          L.circleMarker(l.lower, {
+            radius: 3.5, color: '#1a1d22', fillColor: c, fillOpacity: 0.95, weight: 1,
+          }).addTo(liftLayers);
+          L.circleMarker(l.upper, {
+            radius: 3.5, color: '#1a1d22', fillColor: c, fillOpacity: 0.95, weight: 1,
+          }).addTo(liftLayers);
+        }
+      }
+      document.getElementById('liftCount').textContent = nLifts ? `(${nLifts})` : '';
+      document.getElementById('goodsCount').textContent = nGoods ? `(${nGoods})` : '';
+    }
+
+    // Region outline.
+    const corners = dem.corners_wgs84.map(([lat, lon]) => [lat, lon]);
+    L.polygon(corners, { color: '#6cc8ff', weight: 1, fill: false, dashArray: '4 4' }).addTo(map);
+
+    let launches = [];
+    let markers = new Map();
+    let selectedId = null;
+    let reachabilityLayer = null;
+    let arrowLayer = null;
+
+    function scoreToColor(score, maxScore) {
+      const t = maxScore > 0 ? Math.max(0, Math.min(1, score / maxScore)) : 0;
+      const hue = 30 + 100 * t;
+      return `hsl(${hue}, 70%, 55%)`;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(showToast._h);
+      showToast._h = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function clearOverlays() {
+      if (reachabilityLayer) { map.removeLayer(reachabilityLayer); reachabilityLayer = null; }
+      if (arrowLayer)        { map.removeLayer(arrowLayer); arrowLayer = null; }
+    }
+
+    function bearingDeg(a, b) {
+      // a, b: [lat, lon]. Result: 0=N, 90=E, clockwise.
+      const phi1 = a[0] * Math.PI / 180;
+      const dLon = (b[1] - a[1]) * Math.PI / 180;
+      const dLat = (b[0] - a[0]) * Math.PI / 180;
+      // Cartesian small-area approximation is fine at this scale.
+      const x = dLon * Math.cos(phi1);
+      const y = dLat;
+      let deg = Math.atan2(x, y) * 180 / Math.PI;
+      if (deg < 0) deg += 360;
+      return deg;
+    }
+
+    function drawArrow(fromLatLng, toLatLng) {
+      const line = L.polyline([fromLatLng, toLatLng], {
+        color: '#1a1d22',
+        weight: 2.5,
+        opacity: 0.9,
+        dashArray: '8 6',
+        interactive: false,
+      });
+
+      // Multiple chevrons along the path, like the reference image.
+      const chevrons = [];
+      const steps = 4;
+      const ang = bearingDeg(fromLatLng, toLatLng);
+      for (let i = 1; i < steps; i++) {
+        const t = i / steps;
+        const lat = fromLatLng[0] + (toLatLng[0] - fromLatLng[0]) * t;
+        const lon = fromLatLng[1] + (toLatLng[1] - fromLatLng[1]) * t;
+        const icon = L.divIcon({
+          className: '',
+          html: `<div class="arrow-tip" style="transform: rotate(${ang}deg)"></div>`,
+          iconSize: [12, 12],
+          iconAnchor: [6, 6],
+        });
+        chevrons.push(L.marker([lat, lon], { icon, interactive: false }));
+      }
+
+      const launchDot = L.marker(fromLatLng, {
+        icon: L.divIcon({
+          className: '',
+          html: '<div class="endpoint-circle launch"></div>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+        }),
+        interactive: false,
+      });
+      const farDot = L.marker(toLatLng, {
+        icon: L.divIcon({
+          className: '',
+          html: '<div class="endpoint-circle far"></div>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+        }),
+        interactive: false,
+      });
+
+      return L.layerGroup([line, ...chevrons, launchDot, farDot]);
+    }
+
+    async function selectLaunch(id) {
+      clearOverlays();
+      for (const [mid, m] of markers) {
+        m._icon && m._icon.classList.toggle('selected', mid === id);
+      }
+      document.querySelectorAll('#launchTable tr').forEach(tr => {
+        tr.classList.toggle('selected', Number(tr.dataset.id) === id);
+      });
+      selectedId = id;
+      if (id == null) return;
+
+      const params = new URLSearchParams({
+        glide_ratio: document.getElementById('glideRatio').value,
+        wind_from: document.getElementById('windFrom').value,
+        wind_kmh: document.getElementById('windKmh').value,
+        use_wind: document.getElementById('useWind').checked ? '1' : '0',
+      });
+      reachabilityLayer = L.imageOverlay(
+        `/api/reachability/${id}?` + params,
+        shadeBounds,
+        { opacity: 0.6, interactive: false, className: 'reach-overlay' }
+      ).addTo(map);
+
+      const l = launches.find(x => x.id === id);
+      if (l && l.farthest_lat != null) {
+        arrowLayer = drawArrow([l.lat, l.lon], [l.farthest_lat, l.farthest_lon]).addTo(map);
+      }
+      if (l) {
+        showToast(
+          `Launch #${id}: alt ${Math.round(l.alt_m)} m, aspect ${Math.round(l.aspect_deg)}°, `
+          + `glide ${l.glide_distance_km.toFixed(2)} km, hike ${Math.round(l.hike_minutes)} min, `
+          + `wind ×${l.wind_factor.toFixed(2)}`
+        );
+      }
+    }
+
+    const SEVERITY_RANK = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+    function topSeverity(warnings) {
+      if (!warnings || warnings.length === 0) return null;
+      let top = 'Low';
+      for (const w of warnings) {
+        if (SEVERITY_RANK[w.severity] < SEVERITY_RANK[top]) top = w.severity;
+      }
+      return top;
+    }
+
+    function buildMarker(l, color) {
+      const d = Math.max(8, Math.min(32, 8 + l.glide_distance_km * 1.6));
+      const sev = topSeverity(l.warnings);
+      const badge = sev ? `<div class="warn-badge ${sev}">${sev[0]}</div>` : '';
+      const flaggedCls = sev ? ' flagged' : '';
+      const html =
+        `<div style="position:relative; width:${d}px; height:${d}px">`
+        + `<div class="launch-marker${flaggedCls}" style="background:${color}; width:${d}px; height:${d}px"></div>`
+        + badge + `</div>`;
+      const icon = L.divIcon({ html, className: '', iconSize: [d, d] });
+
+      const warnHtml = (l.warnings && l.warnings.length)
+        ? `<br><b style="color:#f0894a">⚠ ${l.warnings.length} restriction(s)</b><br>`
+          + l.warnings.slice(0, 3).map(w =>
+              `<small><span class="severity-tag ${w.severity}">${w.severity}</span> ${w.name} (${w.kind})</small>`
+            ).join('<br>')
+        : '';
+
+      const marker = L.marker([l.lat, l.lon], { icon })
+        .addTo(map)
+        .bindTooltip(
+          `<b>${Math.round(l.alt_m)} m</b> &middot; aspect ${Math.round(l.aspect_deg)}°<br>`
+          + `glide ${l.glide_distance_km.toFixed(2)} km, hike ${Math.round(l.hike_minutes)} min<br>`
+          + `wind ×${l.wind_factor.toFixed(2)}, score ${(l.score * 60).toFixed(1)} m/min`
+          + warnHtml,
+          { direction: 'top', offset: [0, -8] }
+        )
+        .on('click', () => selectLaunch(l.id));
+      return marker;
+    }
+
+    function renderTable(top) {
+      const tbody = document.querySelector('#launchTable tbody');
+      tbody.innerHTML = '';
+      for (let i = 0; i < top.length; i++) {
+        const l = top[i];
+        const tr = document.createElement('tr');
+        tr.dataset.id = l.id;
+        if (l.id === selectedId) tr.classList.add('selected');
+        const sev = topSeverity(l.warnings);
+        const sevTag = sev ? `<span class="severity-tag ${sev}" style="font-size:8px">${sev[0]}</span>` : '';
+        tr.innerHTML = `
+          <td>${i + 1}${sevTag}</td>
+          <td>${Math.round(l.alt_m)}</td>
+          <td>${Math.round(l.aspect_deg)}°</td>
+          <td>${l.glide_distance_km.toFixed(2)} km</td>
+          <td>${Math.round(l.hike_minutes)} m</td>
+          <td>${(l.score * 60).toFixed(1)}</td>
+        `;
+        tr.addEventListener('click', () => selectLaunch(l.id));
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Debounced refresh: rapid slider input only triggers one fetch after
+    // the user stops moving, so a 5-second wind-speed drag doesn't queue
+    // 50 backend re-computes.
+    let refreshTimer = null;
+    function scheduleRefresh(delayMs = 200) {
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(() => { refresh(); }, delayMs);
+    }
+
+    let inflight = null;
+    async function refresh() {
+      const params = new URLSearchParams({
+        wind_from: document.getElementById('windFrom').value,
+        wind_kmh: document.getElementById('windKmh').value,
+        alpha: document.getElementById('alpha').value,
+        metric: document.getElementById('metric').value,
+        use_wind: document.getElementById('useWind').checked ? '1' : '0',
+        glide_ratio: document.getElementById('glideRatio').value,
+        use_lifts: document.getElementById('useLifts').checked ? '1' : '0',
+      });
+      // Coalesce: only the latest request's result is applied.
+      const myReq = (inflight = {});
+      document.getElementById('summary').textContent = 'computing…';
+      const res = await fetch('/api/launches?' + params).then(r => r.json());
+      if (myReq !== inflight) return; // a newer request has started
+      launches = res;
+
+      for (const m of markers.values()) map.removeLayer(m);
+      markers.clear();
+
+      const maxScore = res.reduce((m, x) => Math.max(m, x.score), 0);
+      for (const l of res) {
+        const color = scoreToColor(l.score, maxScore);
+        markers.set(l.id, buildMarker(l, color));
+      }
+      const flyable = res.filter(l => l.wind_factor > 0.05).length;
+      const bestGlide = res.reduce((m, x) => Math.max(m, x.glide_distance_km), 0);
+      document.getElementById('summary').textContent =
+        `${res.length} candidates, ${flyable} aligned, best glide ${bestGlide.toFixed(1)} km`;
+      renderTable(res.slice(0, 25));
+    }
+
+    function setupRange(id, fmt) {
+      const el = document.getElementById(id);
+      const val = document.getElementById(id + 'Val');
+      const update = () => { if (val) val.textContent = fmt(el.value); };
+      el.addEventListener('input', () => { update(); updateCompass(); scheduleRefresh(); });
+      update();
+    }
+    setupRange('windFrom', v => `${Math.round(v)}°`);
+    setupRange('windKmh', v => `${Math.round(v)} km/h`);
+    setupRange('alpha', v => Number(v).toFixed(2));
+    setupRange('glideRatio', v => `${Number(v).toFixed(1)} : 1`);
+    document.getElementById('metric').addEventListener('change', () => scheduleRefresh(0));
+    document.getElementById('useWind').addEventListener('change', () => scheduleRefresh(0));
+    document.getElementById('useLifts').addEventListener('change', () => scheduleRefresh(0));
+
+    // Hiking-trail overlay (lazy-loaded on first toggle). Colours follow
+    // Swiss trail-marker convention: red for Bergwege (white-red-white),
+    // blue for Alpinwanderwege (white-blue-white).
+    let trailLayers = null;
+    let trailsLoading = false;
+    const sacColor = {
+      T2: '#d63a44', // Bergweg red
+      T3: '#a82832', // Bergweg (demanding) — darker red
+      T4: '#3a73c8', // Alpinwanderweg blue
+      T5: '#2858a8', // Alpine demanding — darker blue
+      T6: '#15396f', // Alpine difficult — deepest blue
+    };
+    const sacLabel = {
+      T2: 'T2 · Bergweg',
+      T3: 'T3 · Bergweg (demanding)',
+      T4: 'T4 · Alpinwanderweg',
+      T5: 'T5 · Alpine (demanding)',
+      T6: 'T6 · Alpine (difficult)',
+    };
+    async function loadTrails() {
+      if (trailLayers) return trailLayers;
+      if (trailsLoading) return null;
+      trailsLoading = true;
+      const status = document.getElementById('trailStatus');
+      status.textContent = 'loading…';
+      try {
+        const data = await fetch('/api/trails').then(r => r.json());
+        trailLayers = L.layerGroup();
+        for (const t of data) {
+          L.polyline(t.points, {
+            color: sacColor[t.sac] || '#888',
+            weight: 2.6,
+            opacity: 0.9,
+          })
+            .bindTooltip(sacLabel[t.sac] || t.sac, { sticky: true, direction: 'top' })
+            .addTo(trailLayers);
+        }
+        status.textContent = `${data.length} segments loaded`;
+        document.getElementById('trailLegend').style.display = 'block';
+      } catch (e) {
+        status.textContent = 'load failed: ' + e;
+      } finally {
+        trailsLoading = false;
+      }
+      return trailLayers;
+    }
+    document.getElementById('showTrails').addEventListener('change', async (e) => {
+      const checked = e.target.checked;
+      const layers = checked ? await loadTrails() : trailLayers;
+      if (!layers) return;
+      if (checked) layers.addTo(map);
+      else map.removeLayer(layers);
+    });
+    function bindToggle(id, layer) {
+      const el = document.getElementById(id);
+      const sync = () => {
+        if (el.checked) layer.addTo(map);
+        else map.removeLayer(layer);
+      };
+      el.addEventListener('change', sync);
+      sync();
+    }
+    // BAZL aviation-obstacle catalog: cable spans (CATENARY) as red lines,
+    // point obstacles (cranes, antennas, etc.) as small red triangles.
+    const obstacleLayers = L.layerGroup();
+    if (dem.obstacles) {
+      let nObs = 0;
+      for (const o of dem.obstacles) {
+        const label = `⚠ BAZL ${o.kind} · top ${Math.round(o.top_amsl_m)} m AMSL · ${Math.round(o.max_agl_m)} m AGL · ${o.registration}`;
+        if (o.geom.type === 'Line') {
+          const pts = o.geom.coords.map(p => [p[0], p[1]]);
+          L.polyline(pts, {
+            color: '#ff6699', weight: 2.5, opacity: 0.95, dashArray: '3 3',
+          }).bindTooltip(label, { sticky: true }).addTo(obstacleLayers);
+          nObs++;
+        } else if (o.geom.type === 'Point') {
+          const [lat, lon] = o.geom.coords;
+          const html = `<div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #ff6699;filter:drop-shadow(0 0 1px #1a1d22)"></div>`;
+          L.marker([lat, lon], {
+            icon: L.divIcon({ html, className: '', iconSize: [10, 9], iconAnchor: [5, 9] }),
+          }).bindTooltip(label).addTo(obstacleLayers);
+          nObs++;
+        }
+      }
+      document.getElementById('obstacleCount').textContent = nObs ? `(${nObs})` : '';
+    }
+
+    bindToggle('showLand', landLayers);
+    bindToggle('showAirspace', airspaceLayers);
+    bindToggle('showLifts', liftLayers);
+    bindToggle('showGoods', goodsLayers);
+    bindToggle('showObstacles', obstacleLayers);
+
+    let jumpIdx = 0;
+    document.getElementById('jumpFlagged').addEventListener('click', () => {
+      const flagged = launches.filter(l => l.warnings && l.warnings.length > 0);
+      if (flagged.length === 0) {
+        showToast('no flagged launches');
+        return;
+      }
+      const l = flagged[jumpIdx % flagged.length];
+      jumpIdx++;
+      map.flyTo([l.lat, l.lon], 14, { duration: 0.6 });
+      selectLaunch(l.id);
+    });
+
+    const compass = document.getElementById('compass');
+    function updateCompass() {
+      const deg = Number(document.getElementById('windFrom').value);
+      document.getElementById('windArrow').style.transform =
+        `translate(-50%, -100%) rotate(${deg}deg)`;
+    }
+    function compassDeg(ev) {
+      const r = compass.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const x = ev.clientX - cx;
+      const y = ev.clientY - cy;
+      let deg = Math.atan2(x, -y) * 180 / Math.PI;
+      if (deg < 0) deg += 360;
+      return deg;
+    }
+    let dragging = false;
+    compass.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      compass.setPointerCapture(e.pointerId);
+      const d = Math.round(compassDeg(e));
+      document.getElementById('windFrom').value = d;
+      document.getElementById('windFromVal').textContent = d + '°';
+      updateCompass();
+      scheduleRefresh();
+    });
+    compass.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const d = Math.round(compassDeg(e));
+      document.getElementById('windFrom').value = d;
+      document.getElementById('windFromVal').textContent = d + '°';
+      updateCompass();
+      scheduleRefresh();
+    });
+    compass.addEventListener('pointerup', () => { if (dragging) { dragging = false; scheduleRefresh(0); } });
+    updateCompass();
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') selectLaunch(null);
+    });
+
+    await refresh();
+  })();
+  </script>
+</body>
+</html>

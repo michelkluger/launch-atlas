@@ -55,7 +55,7 @@ fn main() {
 
     // 2. Hike-time field from a trailhead at the south edge of the map (valley floor).
     let trailhead = CellIdx::new(dem.rows - 2, dem.cols / 2);
-    let hike = hike_field(&dem, &[trailhead], &HikeParams::default());
+    let hike = hike_field(&dem, &[(trailhead, 0.0)], &HikeParams::default());
 
     // 3. Glide flood per launch (still air, GR 8.0).
     let gparams = GlideParams::default();
